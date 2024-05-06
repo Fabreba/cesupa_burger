@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "643959451957",
+    "project_id": "cesupa-burger",
+    "storage_bucket": "cesupa-burger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:643959451957:android:6174cf3bd1ded5f657dc7c",
+        "android_client_info": {
+          "package_name": "com.example.cesupa_burger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8cP_NOusqoXPlTlyp22-yddJWIGbZGvU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
