@@ -1,6 +1,7 @@
-import 'package:cesupa_burger/screens/home_screen.dart'; // Certifique-se de importar a HomeScreen
+import 'package:cesupa_burger/model/AuthModel.dart';
 import 'package:cesupa_burger/services/authentication_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,8 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final Authentication_Service _authService = Authentication_Service();
-  bool _isLogin =
-      true; // Estado para controlar se estamos no modo login ou registro
+  bool _isLogin = true;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +87,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 content: Text('Login realizado com sucesso!'),
                               ),
                             );
+                            AuthModel auth =
+                                Provider.of<AuthModel>(context, listen: false);
+                            auth.login();
                           } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -108,6 +111,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Text('Usuário registrado com sucesso!'),
                               ),
                             );
+                            AuthModel auth =
+                                Provider.of<AuthModel>(context, listen: false);
+                            auth.login();
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -132,11 +138,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   TextButton(
                     onPressed: () {
-                      // Navega para a HomeScreen sem realizar login
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => const HomeScreen()),
-                        (Route<dynamic> route) => false,
-                      );
+                      AuthModel auth =
+                          Provider.of<AuthModel>(context, listen: false);
+                      auth.login();
                     },
                     child: const Text('Continuar sem login'),
                   ),

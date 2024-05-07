@@ -1,9 +1,10 @@
-import 'package:cesupa_burger/screens/home_screen.dart';
-import 'package:cesupa_burger/screens/login_screen.dart';
-import 'package:cesupa_burger/screens/splash_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'model/AuthModel.dart';
+import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
 import 'firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,21 +12,27 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AuthModel(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // Define a tela inicial
-      initialRoute: '/',
-      routes: {
-        '/': (context) =>
-            SplashScreen(), // Tela de splash para verificação de autenticação
-        '/login': (context) => LoginScreen(),
-        '/home': (context) => HomeScreen(),
-      },
+      home: Consumer<AuthModel>(
+        builder: (context, auth, child) {
+          if (auth.isLoggedIn) {
+            return HomeScreen();
+          } else {
+            return LoginScreen();
+          }
+        },
+      ),
     );
   }
 }

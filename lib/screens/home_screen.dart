@@ -1,7 +1,8 @@
-import 'package:cesupa_burger/screens/login_screen.dart';
+import 'package:cesupa_burger/model/AuthModel.dart';
 import 'package:cesupa_burger/services/authentication_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Hamburgueria {
   final String nome;
@@ -52,15 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ElevatedButton(
             onPressed: () {
               if (isUserLoggedIn) {
-                // Se o usuário estiver logado, realiza o logout
                 _authService.signOut();
-                // Atualiza a UI após o logout
-                setState(() {});
-              } else {
-                // Se o usuário não estiver logado, volta para a tela de login
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => const LoginScreen()));
               }
+              AuthModel auth = Provider.of<AuthModel>(context, listen: false);
+                auth.logout();
             },
             child: Text(isUserLoggedIn ? 'Sair' : 'Voltar'),
           ),
