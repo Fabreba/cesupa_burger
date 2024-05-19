@@ -13,9 +13,7 @@ class Hamburgueria {
     required this.endereco,
     required this.contato,
     required this.createdBy,
-    this.precoMedio = 0.0,
+    required this.precoMedio,
     this.nota = 0.0,
-  });
-
-  
+  });  
 }

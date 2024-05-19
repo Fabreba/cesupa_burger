@@ -19,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _descricaoController = TextEditingController();
   final _enderecoController = TextEditingController();
   final _contatoController = TextEditingController();
+  final _precoMedioController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -28,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _descricaoController.dispose();
     _enderecoController.dispose();
     _contatoController.dispose();
+    _precoMedioController.dispose();
     super.dispose();
   }
 
@@ -87,6 +89,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           return null;
                         },
                       ),
+                      TextFormField(
+                        controller: _precoMedioController,
+                        decoration:
+                            const InputDecoration(labelText: 'Preço Médio'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, insira o Preço Médio';
+                          }
+                          return null;
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -109,7 +122,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       descricao: _descricaoController.text,
                       endereco: _enderecoController.text,
                       contato: _contatoController.text,
-                      createdBy: FirebaseAuth.instance.currentUser!.uid);
+                      createdBy: FirebaseAuth.instance.currentUser!.uid,
+                      precoMedio: double.parse(_precoMedioController.text));
                   setState(() {});
                   Navigator.of(context).pop();
                 }
@@ -131,9 +145,8 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              if (isUserLoggedIn) {
-                _authService.signOut();
-              }
+              _authService.signOut();
+
               AuthModel auth = Provider.of<AuthModel>(context, listen: false);
               auth.logout();
             },
@@ -163,21 +176,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemCount: hamburguerias.length,
                       itemBuilder: (context, index) {
                         final hamburguer = hamburguerias[index];
-                        return Container(
-                          margin: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              hamburguer.nome,
-                              style: const TextStyle(
-                                  color: Color.fromRGBO(1, 3, 39, 0.612)),
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HamburgueriaDetalhes(
+                                    hamburgueria: hamburguer),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(5.0),
                             ),
-                            subtitle: Text(
-                                'Nota: ${hamburguer.nota} - Preço Médio: R\$${hamburguer.precoMedio.toStringAsFixed(2)}'),
-                            trailing: const Icon(Icons.arrow_forward),
+                            child: ListTile(
+                              title: Text(
+                                hamburguer.nome,
+                                style: const TextStyle(
+                                    color: Color.fromRGBO(1, 3, 39, 0.612)),
+                              ),
+                              subtitle: Text(
+                                  'Nota: ${hamburguer.nota} - Preço Médio: R\$${hamburguer.precoMedio.toStringAsFixed(2)}'),
+                              trailing: const Icon(Icons.arrow_forward),
+                            ),
                           ),
                         );
                       },
@@ -199,4 +223,160 @@ class _HomeScreenState extends State<HomeScreen> {
           : null,
     );
   }
+}
+
+
+class HamburgueriaDetalhes extends StatelessWidget {
+  final Hamburgueria hamburgueria;
+  const HamburgueriaDetalhes({Key? key, required this.hamburgueria})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(hamburgueria.nome),
+        backgroundColor: Colors.amber,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: <Widget>[
+            Card(
+              elevation: 4,
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on, color: Colors.amber),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Endereço: ${hamburgueria.endereco}',
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(Icons.description, color: Colors.amber),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Descrição: ${hamburgueria.descricao}',
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(Icons.phone, color: Colors.amber),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Contato: ${hamburgueria.contato}',
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(Icons.attach_money, color: Colors.amber),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Preço Médio: R\$${hamburgueria.precoMedio.toStringAsFixed(2)}',
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Avaliações',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            ..._buildMockReviews(),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.comment),
+        backgroundColor: Colors.amber,
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('WIP'),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  List<Widget> _buildMockReviews() {
+    List<Review> reviews = [
+      Review(name: 'João', rating: 4, comment: 'Ótima hamburgueria, atendimento excelente!'),
+      Review(name: 'Maria', rating: 5, comment: 'Melhor hambúrguer que já comi!'),
+      Review(name: 'Carlos', rating: 3, comment: 'Bom, mas o preço é um pouco alto.'),
+    ];
+
+    return reviews.map((review) {
+      return Card(
+        elevation: 2,
+        margin: const EdgeInsets.symmetric(vertical: 5),
+        child: ListTile(
+          leading: Icon(Icons.person, color: Colors.amber),
+          title: Row(
+            children: [
+              Text(review.name, style: TextStyle(fontWeight: FontWeight.bold)),
+              SizedBox(width: 10),
+              _buildRatingStars(review.rating),
+            ],
+          ),
+          subtitle: Text(review.comment),
+        ),
+      );
+    }).toList();
+  }
+
+  Widget _buildRatingStars(int rating) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        return Icon(
+          index < rating ? Icons.star : Icons.star_border,
+          color: Colors.amber,
+          size: 16,
+        );
+      }),
+    );
+  }
+}
+
+class Review {
+  final String name;
+  final int rating;
+  final String comment;
+
+  Review({
+    required this.name,
+    required this.rating,
+    required this.comment,
+  });
 }

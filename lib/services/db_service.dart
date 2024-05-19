@@ -9,6 +9,7 @@ class Database {
     required endereco,
     required contato,
     required createdBy,
+    required precoMedio,
   }) async {
     try {
       await db.collection('hamburguerias').add({
@@ -17,6 +18,7 @@ class Database {
         'endereco': endereco,
         'contato': contato,
         'createdBy': createdBy,
+        'precoMedio': precoMedio,
       });
     } catch (e) {
       print(e);
@@ -31,8 +33,8 @@ class Database {
           descricao: doc['descricao'],
           endereco: doc['endereco'],
           contato: doc['contato'],
-          // Supondo que Hamburgueria tenha um campo createdBy
           createdBy: doc['createdBy'],
+          precoMedio: doc['precoMedio'],
         );
       }).toList();
       return hamburguerias;
