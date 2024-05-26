@@ -1,12 +1,15 @@
-class Hamburgueria {
-  final String nome;
-  final String descricao;
-  final String endereco;
-  final String contato;
-  final String createdBy;
-  final double precoMedio;
-  final double nota;
+import 'package:cesupa_burger/model/Avaliacao.dart';
 
+class Hamburgueria {
+  String nome;
+  String descricao;
+  String endereco;
+  String contato;
+  String createdBy;
+  double precoMedio;
+  double averageRating;  // Add this line
+  int ratingCount;       // Add this line
+  List<Avaliacao> avaliacoes = [];
   Hamburgueria({
     required this.nome,
     required this.descricao,
@@ -14,6 +17,7 @@ class Hamburgueria {
     required this.contato,
     required this.createdBy,
     required this.precoMedio,
-    this.nota = 0.0,
-  });  
+    this.averageRating = 0.0,  // Initialize if not provided
+    this.ratingCount = 0,
+  });
 }

@@ -1,23 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
-
-class AuthenticationProvider with ChangeNotifier {
-  final FirebaseAuth _firebaseAuth;
-
-  User? _user;
-
-  AuthenticationProvider(this._firebaseAuth) {
-    _firebaseAuth.authStateChanges().listen(_onAuthStateChanged);
-  }
-
-  User? get user => _user;
-
-  Future<void> _onAuthStateChanged(User? user) async {
-    _user = user;
-    notifyListeners();
-  }
-}
-
 class Authentication_Service {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   User? usuario;
